@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 
 import { AppComponent } from './app.component';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -13,6 +14,9 @@ import { LayoutModule } from './shared/layout/layout.module';
 
 // routing
 import { APP_ROUTES } from './app.routing';
+
+// auth
+import { AuthService } from './shared/services/auth.service';
 
 @NgModule({
   declarations: [
@@ -27,9 +31,11 @@ import { APP_ROUTES } from './app.routing';
     LayoutModule ,
     HttpClientModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(APP_ROUTES)
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule.forRoot(APP_ROUTES)    
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
