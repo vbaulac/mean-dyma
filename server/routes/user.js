@@ -9,7 +9,7 @@ function isLoggedIn(req, res, next) {
     const token = req.headers.authorization;
     if (token) {
         jwt.verify(token, RSA_PUBLIC_KEY, (err, decoded) => {
-            if (err) { res.status(401).json('token invalid'); }
+            if (err) { return res.status(401).json('token invalid'); }
             const sub = decoded.sub;
             User.findOne({ '_id': sub}).exec( (err, user) => {
                 if (err || !user) { res.status(401).json('error'); }
