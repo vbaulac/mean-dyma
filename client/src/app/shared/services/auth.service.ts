@@ -9,6 +9,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
+
   public jwtToken: BehaviorSubject<JwtToken> = new BehaviorSubject({
     isAuthenticated: null,
     token: null
@@ -47,5 +48,14 @@ export class AuthService {
         localStorage.setItem('jwt', token)
       })
     );
+  }
+
+  public logout(): void {
+    this.jwtToken.next({
+      isAuthenticated: false,
+      token: null
+    });
+
+    localStorage.removeItem('jwt');
   }
 }

@@ -5,7 +5,8 @@ import { MatToolbarModule,
          MatButtonModule, 
          MatInputModule,
          MatFormFieldModule,
-         MatCardModule} from '@angular/material';
+         MatCardModule,
+         MatIconModule} from '@angular/material';
 
 const MODULES = [
   FlexLayoutModule,
@@ -13,7 +14,8 @@ const MODULES = [
   MatInputModule,
   MatFormFieldModule,
   MatCardModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatIconModule
 ]
 
 @NgModule({

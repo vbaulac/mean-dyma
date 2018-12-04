@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
-// only ./ and not ../ because fs is set tup where we started the app
+// only ./ and not ../ because fs is set up where we started the app
 const RSA_KEY_PRIVATE = fs.readFileSync('./rsa/key');
 
 router.post('/signin', (req, res) => {
