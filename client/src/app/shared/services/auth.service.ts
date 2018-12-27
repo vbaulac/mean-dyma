@@ -5,6 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { JwtToken } from '../models/jwt-token.model';
 import { tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MyAppState } from '../store';
+import { Store } from '@ngrx/store';
+import { TryRefreshToken } from '../store/actions/auth.action';
 
 @Injectable({
   providedIn: 'root'
@@ -17,40 +20,46 @@ export class AuthService {
     token: null
   });
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, 
+              private router: Router,
+              private store: Store<MyAppState>) {
     this.initToken();
-    this.subscriptionTimer = this.initTimer();
+    // this.subscriptionTimer = this.initTimer();
   }
   
   public initTimer() {
-    return timer(2000, 5000).pipe(
-      switchMap( () => {
-        console.log('try get token');
-        if (localStorage.getItem('jwt')) {
-           return this.http.get<string>('/api/auth/refresh-token').pipe(
-            tap( (token: string) => {
-              this.jwtToken.next({
-                isAuthenticated: true,
-                token: token
-              });
-              localStorage.setItem('jwt', token);
-            })
-          )
-        } else {
-          this.subscriptionTimer.unsubscribe();
-          return of(null);          
-        }        
+    return timer(2000,50000).pipe(
+      tap( () => {
+        this.store.dispatch(new TryRefreshToken())
       })
-    ).subscribe(() => {}, err => {
-      // en cas d'erreur en essayant de redresh le token, on set l'utilisateur a délogué, on remove le token du local storage, et on se desabonne du timer
-      this.jwtToken.next({
-        isAuthenticated: false,
-        token: null
-      });
+    )
+    //   switchMap( () => {
+    //     console.log('try get token');
+    //     if (localStorage.getItem('jwt')) {
+    //        return this.http.get<string>('/api/auth/refresh-token').pipe(
+    //         tap( (token: string) => {
+    //           this.jwtToken.next({
+    //             isAuthenticated: true,
+    //             token: token
+    //           });
+    //           localStorage.setItem('jwt', token);
+    //         })
+    //       )
+    //     } else {
+    //       this.subscriptionTimer.unsubscribe();
+    //       return of(null);          
+    //     }        
+    //   })
+    // ).subscribe(() => {}, err => {
+    //   // en cas d'erreur en essayant de redresh le token, on set l'utilisateur a délogué, on remove le token du local storage, et on se desabonne du timer
+    //   this.jwtToken.next({
+    //     isAuthenticated: false,
+    //     token: null
+    //   });
 
-      localStorage.removeItem('jwt');
-      this.subscriptionTimer.unsubscribe();
-    });
+    //   localStorage.removeItem('jwt');
+    //   this.subscriptionTimer.unsubscribe();
+    // });
   }
 
   private initToken(): void {
@@ -73,17 +82,7 @@ export class AuthService {
   }
 
   public signin(credentials: {email: string, password: string}): Observable<string> {
-    return this.http.post<string>('api/auth/signin', credentials).pipe(
-      tap( (token:string) => {
-        this.jwtToken.next({
-          isAuthenticated: true,
-          token: token
-        });
-        localStorage.setItem('jwt', token)
-        this.subscriptionTimer = this.initTimer();
-        this.router.navigate(['/profile']);
-      })
-    );
+    return this.http.post<string>('api/auth/signin', credentials);
   }
 
   public logout(): void {
@@ -95,5 +94,9 @@ export class AuthService {
     localStorage.removeItem('jwt');
 
     this.router.navigate(['/signin']);
+  }
+
+  public refreshToken(): Observable<string> {
+    return this.http.get<string>('/api/auth/refresh-token');
   }
 }

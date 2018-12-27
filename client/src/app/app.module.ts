@@ -17,6 +17,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 // ngrx files
 import { reducersMap } from './shared/store';
+import { AuthEffects } from './shared/store/effects/auth.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +28,7 @@ import { reducersMap } from './shared/store';
     BrowserAnimationsModule,
     RouterModule.forRoot(APP_ROUTES),
     StoreModule.forRoot(reducersMap),
-    // EffectsModule.forRoot(),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({
       name: 'Ngrx Photos',
       logOnly: environment.production
