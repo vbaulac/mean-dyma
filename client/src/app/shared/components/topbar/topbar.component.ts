@@ -6,6 +6,7 @@ import { MyAppState } from '../../store';
 import { Store, select } from '@ngrx/store';
 import { isLoggedInSelector } from '../../store/selectors/auth.selectors';
 import { Logout } from '../../store/actions/auth.action';
+import { SetFilter, FetchPhotos } from 'src/app/photos/shared/store/photos.actions';
 
 @Component({
   selector: 'app-topbar',
@@ -23,5 +24,11 @@ export class TopbarComponent implements OnInit {
 
   public logout(): void {
     this.store.dispatch(new Logout());
+  }
+
+  public applyFilter(filter: string) : void {
+    this.store.dispatch(new SetFilter(filter));
+    this.store.dispatch(new FetchPhotos());
+    // console.log(filter);
   }
 }
