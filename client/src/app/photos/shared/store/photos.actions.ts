@@ -1,4 +1,5 @@
 import { Action } from "@ngrx/store";
+import { Photo } from "../models/photo.model";
 
 export const SET_FILTER ='[photos] set filter';
 export const FETCH_PHOTOS ='[photos] fetch photos ';
@@ -15,7 +16,7 @@ export class FetchPhotos implements Action {
 
 export class FetchPhotosSuccess implements Action {
     readonly type = FETCH_PHOTOS_SUCCESS;
-    constructor(public payload: any[]) {}
+    constructor(public payload: Photo[]) {}
 }
 
 export type PhotosActions = SetFilter |

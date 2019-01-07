@@ -1,7 +1,8 @@
-import { SET_FILTER, PhotosActions } from "./photos.actions";
+import { SET_FILTER, PhotosActions, FETCH_PHOTOS_SUCCESS } from "./photos.actions";
+import { Photo } from "../models/photo.model";
 
 export interface PhotosState {
-    photos: any[];
+    photos: Photo[];
     filter: string;
 }
 
@@ -12,6 +13,12 @@ export function photosReducer(state: PhotosState, action: PhotosActions): Photos
                 ...state,
                 filter: action.payload
             };
+        }
+        case FETCH_PHOTOS_SUCCESS: {
+            return {
+                ...state,
+                photos: action.payload
+            }
         }
     }
     return state;

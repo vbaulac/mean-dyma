@@ -10,3 +10,11 @@ export const filterSelector = createSelector(photosSelector, (photosState: Photo
         return null;
     }
 });
+
+export const photosResultSelector = createSelector(photosSelector, (photosState: PhotosState) => {
+    if (photosState) {
+        return photosState.photos;
+    } else {
+        return null;
+    }
+})
