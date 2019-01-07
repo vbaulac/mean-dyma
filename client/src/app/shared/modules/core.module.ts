@@ -13,7 +13,6 @@ import { LayoutModule } from './layout.module';
 
 // component
 import { AppComponent } from 'src/app/app.component';
-import { HomepageComponent } from 'src/app/components/homepage/homepage.component';
 import { SignupComponent } from 'src/app/components/signup/signup.component';
 import { SigninComponent } from 'src/app/components/signin/signin.component';
 import { TopbarComponent } from '../components/topbar/topbar.component';
@@ -21,7 +20,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 const COMPONENTS = [
-  HomepageComponent,
   SignupComponent,
   SigninComponent,
   TopbarComponent
