@@ -1,5 +1,5 @@
 import { User } from "../../models/user.model";
-import { AuthActions, SIGNUP_ERROR, SIGNIN_ERROR, SIGNIN_SUCCESS, LOGOUT } from "../actions/auth.action";
+import { AuthActions, SIGNUP_ERROR, SIGNIN_ERROR, SIGNIN_SUCCESS, LOGOUT, SET_CURRENT_USER } from "../actions/auth.action";
 
 export interface AuthState {
     user: User;
@@ -41,6 +41,12 @@ export function authReducer(state: AuthState = initialState, action: AuthActions
                 isLoggedin: false,
                 user: null
             };
+        }
+        case SET_CURRENT_USER : {
+            return {
+                ...state,
+                user: action.payload
+            }
         }
     }
     return state;

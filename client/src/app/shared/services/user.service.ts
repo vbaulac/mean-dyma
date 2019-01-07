@@ -8,22 +8,9 @@ import { tap, switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class UserService {
-  public currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-
   constructor(private http: HttpClient) { }
 
   public getCurrentUser(): Observable<User> {
-    if (this.currentUser.value) {
-      return this.currentUser;
-    } else {
-      return this.http.get<User>('/api/user/current').pipe(
-        tap( (user:User) => {
-          this.currentUser.next(user);
-        }),
-        switchMap( (user: User) => { // switchMap retourne un nouvel observable
-          return this.currentUser;
-        })
-      );
-    }
+      return this.http.get<User>('/api/user/current');
   }
 }

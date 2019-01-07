@@ -31,3 +31,13 @@ export const isLoggedInSelector = createSelector(authSelector,
         }
     }
 );
+
+export const currentUserSelector = createSelector(authSelector,
+    (authState: AuthState) => {
+        if (authState) {
+            return authState.user;
+        } else {
+            return null;
+        }
+    }
+);

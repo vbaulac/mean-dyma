@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
-import { TRY_SIGNUP, TrySignup, SignupError, TRY_SIGNIN, TrySignin, SigninError, SigninSuccess, SIGNIN_SUCCESS, TRY_REFRESH_TOKEN, LOGOUT } from "../actions/auth.action";
+import { TRY_SIGNUP, TrySignup, SignupError, TRY_SIGNIN, TrySignin, SigninError, SigninSuccess, SIGNIN_SUCCESS, TRY_REFRESH_TOKEN, LOGOUT, TRY_FETCH_CURRENT_USER, TryFetchCurrentUser, SetCurrentUser } from "../actions/auth.action";
 import { map, switchMap, catchError, tap, withLatestFrom } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
 import { User } from "../../models/user.model";
@@ -10,6 +10,7 @@ import { of, Subscription } from "rxjs";
 import { MyAppState } from "..";
 import { Store, select } from "@ngrx/store";
 import { tokenAuthSelector } from "../selectors/auth.selectors";
+import { UserService } from "../../services/user.service";
 
 @Injectable()
 export class AuthEffects {  
@@ -96,8 +97,23 @@ export class AuthEffects {
         })
     );
 
+    @Effect()
+    tryFetchCurrentUser$ = this.actions$.pipe(
+        ofType(TRY_FETCH_CURRENT_USER),
+        switchMap( () => {
+            return this.userService.getCurrentUser();
+        }),
+        map( (user: User) => {
+            return new SetCurrentUser(user);
+        }),
+        catchError( (err: any) => {
+            return empty();
+        })
+    );
+
     constructor(private actions$: Actions,
                 private authService: AuthService,
+                private userService: UserService,
                 private router: Router,
                 private store: Store<MyAppState>) { }
 }
