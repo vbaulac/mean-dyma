@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
-import { TRY_SIGNUP, TrySignup, SignupError, TRY_SIGNIN, TrySignin, SigninError, SigninSuccess, SIGNIN_SUCCESS, TRY_REFRESH_TOKEN } from "../actions/auth.action";
-import { map, switchMap, catchError, tap } from "rxjs/operators";
+import { TRY_SIGNUP, TrySignup, SignupError, TRY_SIGNIN, TrySignin, SigninError, SigninSuccess, SIGNIN_SUCCESS, TRY_REFRESH_TOKEN, LOGOUT } from "../actions/auth.action";
+import { map, switchMap, catchError, tap, withLatestFrom } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
 import { User } from "../../models/user.model";
 import { Router } from "@angular/router";
 import { empty } from "rxjs/internal/observable/empty";
 import { of, Subscription } from "rxjs";
+import { MyAppState } from "..";
+import { Store, select } from "@ngrx/store";
+import { tokenAuthSelector } from "../selectors/auth.selectors";
 
 @Injectable()
 export class AuthEffects {  
@@ -51,6 +54,7 @@ export class AuthEffects {
         tap( () => {
             if (!this.subscription) {
                 this.subscription = this.authService.initTimer().subscribe();
+                this.router.navigate(['/']);
             }
         })
     );
@@ -58,22 +62,42 @@ export class AuthEffects {
     @Effect()
     tryRefreshToken$ = this.actions$.pipe(
         ofType(TRY_REFRESH_TOKEN),
-        switchMap(() => {
-            return this.authService.refreshToken();
-        }),
-        map( (token: string) => {
-            localStorage.setItem('token', token);
-            return new SigninSuccess(token);
-        }),
-        catchError( (err: any) => {
+        withLatestFrom(this.store.pipe(select(tokenAuthSelector))),
+        switchMap(([action, token]) => {
+            if (token) {
+                return this.authService.refreshToken().pipe(
+                    map( (newToken: string) => {
+                        localStorage.setItem('token', newToken);
+                        return new SigninSuccess(newToken);
+                    }),
+                    catchError( (err: any) => {
+                        localStorage.removeItem('token');
+                        if (this.subscription) {
+                            this.subscription.unsubscribe();
+                        }
+                        return empty();
+                    })
+                );         
+            } else {
+                return empty();
+            }
+        }),       
+    );
+
+    @Effect({ dispatch: false })
+    logout$ = this.actions$.pipe(
+        ofType(LOGOUT),
+        tap( () => {
             if (this.subscription) {
                 this.subscription.unsubscribe();
             }
-            return empty();
+            localStorage.removeItem('token');
+            this.router.navigate(['/']);
         })
     );
 
     constructor(private actions$: Actions,
                 private authService: AuthService,
-                private router: Router) { }
+                private router: Router,
+                private store: Store<MyAppState>) { }
 }

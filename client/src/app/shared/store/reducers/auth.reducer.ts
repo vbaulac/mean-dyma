@@ -1,5 +1,5 @@
 import { User } from "../../models/user.model";
-import { AuthActions, SIGNUP_ERROR, SIGNIN_ERROR, SIGNIN_SUCCESS } from "../actions/auth.action";
+import { AuthActions, SIGNUP_ERROR, SIGNIN_ERROR, SIGNIN_SUCCESS, LOGOUT } from "../actions/auth.action";
 
 export interface AuthState {
     user: User;
@@ -8,7 +8,14 @@ export interface AuthState {
     isLoggedin: boolean;
 }
 
-export function authReducer(state: AuthState, action: AuthActions): AuthState {
+const initialState = {
+    user: null,
+    token: localStorage.getItem('token'),
+    error: null,
+    isLoggedin: null
+};
+
+export function authReducer(state: AuthState = initialState, action: AuthActions): AuthState {
     switch (action.type) {
         case SIGNIN_ERROR :
         case SIGNUP_ERROR : {
@@ -24,6 +31,15 @@ export function authReducer(state: AuthState, action: AuthActions): AuthState {
                 token: action.payload,
                 isLoggedin: true,
                 error: null
+            };
+        }
+        case LOGOUT : {
+            return {
+                ...state,
+                error: null,
+                token: null,
+                isLoggedin: false,
+                user: null
             };
         }
     }

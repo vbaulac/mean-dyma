@@ -21,3 +21,13 @@ export const tokenAuthSelector = createSelector(authSelector,
         }
     }
 );
+
+export const isLoggedInSelector = createSelector(authSelector,
+    (authState: AuthState) => {
+        if (authState) {
+            return authState.isLoggedin;
+        } else {
+            return null;
+        }
+    }
+);

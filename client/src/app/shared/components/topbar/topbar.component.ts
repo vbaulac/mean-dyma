@@ -1,30 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { JwtToken } from '../../models/jwt-token.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { MyAppState } from '../../store';
+import { Store, select } from '@ngrx/store';
+import { isLoggedInSelector } from '../../store/selectors/auth.selectors';
+import { Logout } from '../../store/actions/auth.action';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.css']
 })
-export class TopbarComponent implements OnInit, OnDestroy {
-  public jwtToken: JwtToken;
-  public subscription: Subscription;
+export class TopbarComponent implements OnInit {
+  public isLoggedIn$: Observable<boolean>;
 
-  constructor(private authService: AuthService) { }
+  constructor(private store: Store<MyAppState>) { }
 
   ngOnInit() {
-    this.subscription = this.authService.jwtToken.subscribe((jwtToken: JwtToken) => {
-      this.jwtToken = jwtToken;
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) { this.subscription.unsubscribe(); }
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
 
   public logout(): void {
-    this.authService.logout();
+    this.store.dispatch(new Logout());
   }
 }

@@ -13,6 +13,8 @@ export const SET_CURRENT_USER = '[user] set current user';
 
 export const TRY_REFRESH_TOKEN = '[user] try refresh token';
 
+export const LOGOUT = '[user] logout';
+
 export class TrySignup implements Action {
     readonly type = TRY_SIGNUP;
     constructor(public payload: User) {}
@@ -51,6 +53,10 @@ export class TryRefreshToken implements Action {
     readonly type = TRY_REFRESH_TOKEN;
 }
 
+export class Logout implements Action {
+    readonly type = LOGOUT;
+}
+
 export type AuthActions =   TrySignup |
                             SignupError |
                             TrySignin |
@@ -58,4 +64,5 @@ export type AuthActions =   TrySignup |
                             SigninError |
                             TryFetchCurrentUser |
                             SetCurrentUser |
-                            TryRefreshToken ;
+                            TryRefreshToken |
+                            Logout ;
