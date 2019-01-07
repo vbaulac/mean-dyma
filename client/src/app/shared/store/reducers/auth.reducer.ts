@@ -8,7 +8,7 @@ export interface AuthState {
     isLoggedin: boolean;
 }
 
-const initialState = {
+export const initialState = {
     user: null,
     token: localStorage.getItem('token'),
     error: null,
