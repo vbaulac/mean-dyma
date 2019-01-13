@@ -22,5 +22,17 @@
         ]
       }
     }
+  ],
+  "dataGroup": [
+    {
+      "name": "api",
+      "urls": ["https://**unsplash**"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "ld",
+        "timeout": "5s",
+        "strategy": "performance"
+      }
+    }
   ]
 }
